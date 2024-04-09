@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="main_layout.html">
+
+<div layout:fragment="siteContent" class="mt-2 mb-5">
+    <div class="row">
+        <div class="col-6 mx-auto">
+            <form action="/save-category" method="post" th:if="${categoryById!=null}">
+                <input type="hidden" name="id" th:value="${categoryById.id}">
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <label>NAME:</label>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <input class="form-control" type="text" name="name"
+                               placeholder="Insert Name"
+                               th:value="${categoryById.name}">
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <button class="btn btn-success btn-sm">SAVE TASK</button>
+                        <button type="button" class="btn btn-sm btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#delete-btn">
+                            DELETE THIS CATEGORY
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <!-- Modal -->
+            <div class="modal fade" id="delete-btn" tabindex="-1" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true" th:if="${categoryById!=null}">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form th:action="@{'/delete-category'}" method="post">
+                            <input type="hidden" name="id" th:value="${categoryById.id}">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm delete</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button class="btn btn-danger">Save changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <h4 th:if="${categoryById==null}" class="text-center">404 NOT FOUND</h4>
+        </div>
+    </div>
+</div>
+</html>

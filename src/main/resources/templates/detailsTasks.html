@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="main_layout.html">
+
+<div layout:fragment="siteContent" class="mt-2 mb-5">
+    <div class="row">
+        <div class="col-6 mx-auto">
+            <form action="/save-task" method="post" th:if="${taskById!=null}">
+                <input type="hidden" name="id" th:value="${taskById.id}">
+                <input type="hidden" name="folder_id" th:value="${taskById.folder.id}">
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <label>TITLE:</label>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <input class="form-control" type="text" name="title"
+                               placeholder="Insert Name"
+                               th:value="${taskById.title}" th:readonly="${taskById.status==2 || taskById==3}">
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <label>STATUS:</label>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <select class="form-select" name="status" th:readonly="${taskById.status==2 || taskById==3}">
+                            <option class="text-primary" value="0" th:selected="${taskById.status == 0}">TO DO</option>
+                            <option class="text-warning" value="1" th:selected="${taskById.status == 1}">IN TEST</option>
+                            <option class="text-success" value="2" th:selected="${taskById.status == 2}">DONE</option>
+                            <option class="text-danger" value="3" th:selected="${taskById.status == 3}">FAILED</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <label>DESCRIPTION:</label>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <textarea class="form-control" name="description"
+                                  th:text="${taskById.description}"
+                                  th:readonly="${taskById.status==2 || taskById==3}"></textarea>
+                    </div>
+                </div>
+                <div class="row mt-3" >
+                    <div class="col-12">
+                        <button class="btn btn-success btn-sm"
+                                th:if="${taskById.status==0 || taskById.status==1}">SAVE TASK</button>
+                        <button type="button" class="btn btn-sm btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#delete-btn">
+                            DELETE TASK
+                        </button>
+                    </div>
+                </div>
+            </form>
+                <!-- Modal -->
+                <div class="modal fade" id="delete-btn" tabindex="-1" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true" th:if="${taskById!=null}">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form th:action="@{'/delete-task'}" method="post">
+                                <input type="hidden" name="id" th:value="${taskById.id}">
+                                <input type="hidden" name="folder_id" th:value="${taskById.folder.id}">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm delete</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    ARE YOU SURE?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button class="btn btn-danger">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <h4 th:if="${taskById==null}" class="text-center">404 NOT FOUND</h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-8 mx-auto">
+            <div class="mt-5">
+                <h3 class="text-center" >Comment Section:</h3>
+                <form th:action="@{'/add-comment'}" method="post">
+                    <input type="hidden" name="task_id" th:value="${taskById.id}">
+                    <textarea class="form-control" name="comment" placeholder="Insert text"></textarea>
+                    <button class="btn btn-sm btn-primary float-end mt-1 mb-2" style="width: 8rem; height: 30px">ADD COMMENT</button>
+                </form>
+                <textarea class="form-control mt-2" style="height: 10px"
+                          th:if="${comms.task.id == taskById.id}"
+                          th:each="comms : ${comments}"
+                          th:text="${comms.comment}" readonly></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+</html>
